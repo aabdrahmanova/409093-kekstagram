@@ -1,7 +1,7 @@
-# Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
+﻿# Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Алсу Абдрахманова](https://up.htmlacademy.ru/javascript/12/user/409093).
-* Наставник: `Неизвестно`.
+* Наставник: [Екатерина Кащенко].
 
 ---
 

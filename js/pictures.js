@@ -1,5 +1,5 @@
 'use strict';
-
+var ESC_KEYCODE = 27;
 var photos = [];
 var url = [];
 var comments = ['Всё отлично!',
@@ -46,16 +46,161 @@ function addContent() {
     document.querySelector('.pictures').appendChild(document.importNode(content, true));
   }
 }
-function openModal() {
-  var gallery = document.querySelector('.gallery-overlay');
-  gallery.classList.remove('hidden');
-}
-function fillOpenPicture() {
-  document.querySelector('.gallery-overlay .gallery-overlay-image').src = photos[0].url;
-  document.querySelector('.gallery-overlay .comments-count').textContent = photos[0].comments.length;
-  document.querySelector('.gallery-overlay .likes-count').textContent = photos[0].likes;
+
+function openPicture(index) {
+  document.querySelector('.gallery-overlay').classList.remove('hidden');
+  document.querySelector('.gallery-overlay .gallery-overlay-image').src = photos[index].url;
+  document.querySelector('.gallery-overlay .comments-count').textContent = photos[index].comments.length;
+  document.querySelector('.gallery-overlay .likes-count').textContent = photos[index].likes;
 }
 createPhotoArr(25, photos);
 addContent();
-openModal();
-fillOpenPicture();
+
+// Показ изображения в полноэкранном режиме
+document.querySelectorAll('.picture').forEach(function (element, index) {
+  element.addEventListener('click', function () {
+    openPicture(index);
+    document.querySelector('.gallery-overlay-close').addEventListener('click', function () {
+      document.querySelector('.gallery-overlay').classList.add('hidden');
+    });
+  });
+});
+
+// Загрузка изображения и показ формы редактирования
+
+var uploadFile = document.querySelector('#upload-file');
+var uploadForm = document.querySelector('.upload-overlay');
+var uploadCancel = document.querySelector('#upload-cancel');
+
+function onPopupEscPress(evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+}
+function openPopup() {
+  uploadForm.classList.remove('hidden');
+  resizeValue.setAttribute('value', '100%');
+  resize();
+  document.querySelector('.upload-effect-level').classList.add('hidden');
+  document.addEventListener('keydown', onPopupEscPress);
+}
+function closePopup() {
+  uploadForm.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+  document.getElementById('upload-file').value = '';
+}
+uploadFile.addEventListener('change', function () {
+  openPopup();
+});
+uploadCancel.addEventListener('click', function () {
+  closePopup();
+});
+
+// Применение эффекта для изображения
+var photoPreview = document.querySelector('.effect-image-preview');
+var noneFilter = document.querySelector('#upload-effect-none');
+var chromeFilter = document.querySelector('#upload-effect-chrome');
+var sepiaFilter = document.querySelector('#upload-effect-sepia');
+var marvinFilter = document.querySelector('#upload-effect-marvin');
+var phobosFilter = document.querySelector('#upload-effect-phobos');
+var heatFilter = document.querySelector('#upload-effect-heat');
+var effectPin = uploadForm.querySelector('.upload-effect-level-pin');
+var effectValue = uploadForm.querySelector('.upload-effect-level-value');
+var currentFilter;
+var FILTERS = {
+  NONE: 'none',
+  CHROME: 'chrome',
+  SEPIA: 'sepia',
+  MARVIN: 'marvin',
+  PHOBOS: 'phobos',
+  HEAT: 'heat'
+};
+
+noneFilter.addEventListener('click', function () {
+  currentFilter = FILTERS.NONE;
+  toggleClasses();
+  applyFilter();
+});
+
+chromeFilter.addEventListener('click', function () {
+  currentFilter = FILTERS.CHROME;
+  toggleClasses();
+  applyFilter();
+});
+
+sepiaFilter.addEventListener('click', function () {
+  currentFilter = FILTERS.SEPIA;
+  toggleClasses();
+  applyFilter();
+});
+
+marvinFilter.addEventListener('click', function () {
+  currentFilter = FILTERS.MARVIN;
+  toggleClasses();
+  applyFilter();
+});
+
+phobosFilter.addEventListener('click', function () {
+  currentFilter = FILTERS.PHOBOS;
+  toggleClasses();
+  applyFilter();
+
+});
+
+heatFilter.addEventListener('click', function () {
+  currentFilter = FILTERS.HEAT;
+  toggleClasses();
+  applyFilter();
+});
+
+effectPin.addEventListener('mouseup', applyFilter);
+
+function toggleClasses() {
+  photoPreview.className = 'effect-image-preview effect-' + currentFilter;
+  document.querySelector('.upload-effect-level').classList.toggle('hidden', currentFilter === FILTERS.NONE);
+}
+effectValue.setAttribute('value', parseInt(effectPin.style.left, 10));
+
+function applyFilter() {
+  switch (currentFilter) {
+    case FILTERS.SEPIA:
+      photoPreview.style.filter = 'sepia(' + (1 * effectValue.value / 100) + ')';
+      break;
+    case FILTERS.CHROME:
+      photoPreview.style.filter = 'grayscale(' + (1 * effectValue.value / 100) + ')';
+      break;
+    case FILTERS.MARVIN:
+      photoPreview.style.filter = 'invert(' + (effectValue.value) + '%)';
+      break;
+    case FILTERS.PHOBOS:
+      photoPreview.style.filter = 'blur(' + (3 * effectValue.value / 100) + 'px)';
+      break;
+    case FILTERS.HEAT:
+      photoPreview.style.filter = 'brightness(' + (3 * effectValue.value / 100) + ')';
+      break;
+    default:
+      photoPreview.style = '';
+  }
+}
+
+// Редактирование размера изображения
+var resizeDec = document.querySelector('.upload-resize-controls-button-dec');
+var resizeInc = document.querySelector('.upload-resize-controls-button-inc');
+var resizeValue = document.querySelector('.upload-resize-controls-value');
+
+resizeDec.addEventListener('click', function () {
+  if (parseInt(resizeValue.value, 10) > 25) {
+    resizeValue.setAttribute('value', parseInt(resizeValue.value, 10) - 25 + '%');
+    resize();
+  }
+});
+resizeInc.addEventListener('click', function () {
+  if (parseInt(resizeValue.value, 10) < 100) {
+    resizeValue.setAttribute('value', parseInt(resizeValue.value, 10) + 25 + '%');
+    resize();
+  }
+});
+
+function resize() {
+  photoPreview.style.transform = 'scale(' + parseInt(resizeValue.value, 10) / 100 + ')';
+}

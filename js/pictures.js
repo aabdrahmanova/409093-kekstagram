@@ -97,15 +97,12 @@ uploadCancel.addEventListener('click', function () {
 });
 
 // Применение эффекта для изображения
-var photoPreview = document.querySelector('.effect-image-preview');
-var noneFilter = document.querySelector('#upload-effect-none');
-var chromeFilter = document.querySelector('#upload-effect-chrome');
-var sepiaFilter = document.querySelector('#upload-effect-sepia');
-var marvinFilter = document.querySelector('#upload-effect-marvin');
-var phobosFilter = document.querySelector('#upload-effect-phobos');
-var heatFilter = document.querySelector('#upload-effect-heat');
 var effectPin = uploadForm.querySelector('.upload-effect-level-pin');
 var effectValue = uploadForm.querySelector('.upload-effect-level-value');
+var uploadEffectControls = document.querySelector('.upload-effect-controls');
+var photoPreview = document.querySelector('.effect-image-preview');
+var ARR_OF_INPUT_IDS = ['upload-effect-none', 'upload-effect-chrome', 'upload-effect-sepia', 'upload-effect-marvin', 'upload-effect-phobos', 'upload-effect-heat'];
+var ARR_OF_IMAGE_CLASSES = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
 var currentFilter;
 var FILTERS = {
   NONE: 'none',
@@ -116,49 +113,24 @@ var FILTERS = {
   HEAT: 'heat'
 };
 
-noneFilter.addEventListener('click', function () {
-  currentFilter = FILTERS.NONE;
-  toggleClasses();
-  applyFilter();
-});
-
-chromeFilter.addEventListener('click', function () {
-  currentFilter = FILTERS.CHROME;
-  toggleClasses();
-  applyFilter();
-});
-
-sepiaFilter.addEventListener('click', function () {
-  currentFilter = FILTERS.SEPIA;
-  toggleClasses();
-  applyFilter();
-});
-
-marvinFilter.addEventListener('click', function () {
-  currentFilter = FILTERS.MARVIN;
-  toggleClasses();
-  applyFilter();
-});
-
-phobosFilter.addEventListener('click', function () {
-  currentFilter = FILTERS.PHOBOS;
-  toggleClasses();
-  applyFilter();
-
-});
-
-heatFilter.addEventListener('click', function () {
-  currentFilter = FILTERS.HEAT;
-  toggleClasses();
-  applyFilter();
-});
-
-effectPin.addEventListener('mouseup', applyFilter);
-
-function toggleClasses() {
-  photoPreview.className = 'effect-image-preview effect-' + currentFilter;
-  document.querySelector('.upload-effect-level').classList.toggle('hidden', currentFilter === FILTERS.NONE);
+function setFilterToImage(e) {
+  photoPreview.classList.add('effect-image-preview');
+  var target = e.target.parentNode;
+  for (var j = 0; j < ARR_OF_INPUT_IDS.length; j++) {
+    currentFilter = FILTERS[j];
+    if (target.previousElementSibling.id === ARR_OF_INPUT_IDS[j]) {
+      photoPreview.className = '';
+      photoPreview.classList.add(ARR_OF_IMAGE_CLASSES[j]);
+    }
+  }
 }
+// Убирает слайдер, если выбран оригинал
+// document.querySelector('.upload-effect-level').classList.toggle('hidden', currentFilter === FILTERS.NONE);
+
+// Навешиваем обработчики событий
+uploadEffectControls.addEventListener('click', setFilterToImage);
+
+// Настройка интенсивности фильтра
 effectValue.setAttribute('value', parseInt(effectPin.style.left, 10));
 
 function applyFilter() {
@@ -183,6 +155,8 @@ function applyFilter() {
   }
 }
 
+effectPin.addEventListener('mouseup', applyFilter);
+
 // Редактирование размера изображения
 var resizeDec = document.querySelector('.upload-resize-controls-button-dec');
 var resizeInc = document.querySelector('.upload-resize-controls-button-inc');
@@ -204,3 +178,4 @@ resizeInc.addEventListener('click', function () {
 function resize() {
   photoPreview.style.transform = 'scale(' + parseInt(resizeValue.value, 10) / 100 + ')';
 }
+

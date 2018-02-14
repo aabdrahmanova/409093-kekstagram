@@ -52,7 +52,12 @@ function openPicture(index) {
   document.querySelector('.gallery-overlay .gallery-overlay-image').src = photos[index].url;
   document.querySelector('.gallery-overlay .comments-count').textContent = photos[index].comments.length;
   document.querySelector('.gallery-overlay .likes-count').textContent = photos[index].likes;
+  document.addEventListener('keydown', onPopupEscPress);
 }
+function closePicture() {
+  document.querySelector('.gallery-overlay').classList.add('hidden');
+}
+
 createPhotoArr(25, photos);
 addContent();
 
@@ -61,13 +66,14 @@ document.querySelectorAll('.picture').forEach(function (element, index) {
   element.addEventListener('click', function () {
     openPicture(index);
     document.querySelector('.gallery-overlay-close').addEventListener('click', function () {
-      document.querySelector('.gallery-overlay').classList.add('hidden');
+      closePicture();
     });
+
   });
 });
 
-// Загрузка изображения и показ формы редактирования
 
+// Загрузка изображения и показ формы редактирования
 var uploadFile = document.querySelector('#upload-file');
 var uploadForm = document.querySelector('.upload-overlay');
 var uploadCancel = document.querySelector('#upload-cancel');
@@ -75,13 +81,13 @@ var uploadCancel = document.querySelector('#upload-cancel');
 function onPopupEscPress(evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closePopup();
+    closePicture();
   }
 }
 function openPopup() {
   uploadForm.classList.remove('hidden');
   resizeValue.setAttribute('value', '100%');
   resize();
-  document.querySelector('.upload-effect-level').classList.add('hidden');
   document.addEventListener('keydown', onPopupEscPress);
 }
 function closePopup() {
@@ -97,65 +103,38 @@ uploadCancel.addEventListener('click', function () {
 });
 
 // Применение эффекта для изображения
+var effectLevelElement = document.querySelector('.upload-effect-level');
 var effectPin = uploadForm.querySelector('.upload-effect-level-pin');
 var effectValue = uploadForm.querySelector('.upload-effect-level-value');
 var uploadEffectControls = document.querySelector('.upload-effect-controls');
 var photoPreview = document.querySelector('.effect-image-preview');
 var ARR_OF_INPUT_IDS = ['upload-effect-none', 'upload-effect-chrome', 'upload-effect-sepia', 'upload-effect-marvin', 'upload-effect-phobos', 'upload-effect-heat'];
 var ARR_OF_IMAGE_CLASSES = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
-var currentFilter;
-var FILTERS = {
-  NONE: 'none',
-  CHROME: 'chrome',
-  SEPIA: 'sepia',
-  MARVIN: 'marvin',
-  PHOBOS: 'phobos',
-  HEAT: 'heat'
-};
+
+effectLevelElement.classList.add('hidden');
 
 function setFilterToImage(e) {
   photoPreview.classList.add('effect-image-preview');
   var target = e.target.parentNode;
   for (var j = 0; j < ARR_OF_INPUT_IDS.length; j++) {
-    currentFilter = FILTERS[j];
     if (target.previousElementSibling.id === ARR_OF_INPUT_IDS[j]) {
+      if (ARR_OF_INPUT_IDS[j] === 'upload-effect-none') {
+        effectLevelElement.classList.add('hidden');
+      } else {
+        effectLevelElement.classList.remove('hidden');
+      }
       photoPreview.className = '';
       photoPreview.classList.add(ARR_OF_IMAGE_CLASSES[j]);
+      photoPreview.style.filter = '';
     }
   }
 }
-// Убирает слайдер, если выбран оригинал
-// document.querySelector('.upload-effect-level').classList.toggle('hidden', currentFilter === FILTERS.NONE);
 
 // Навешиваем обработчики событий
 uploadEffectControls.addEventListener('click', setFilterToImage);
 
 // Настройка интенсивности фильтра
 effectValue.setAttribute('value', parseInt(effectPin.style.left, 10));
-
-function applyFilter() {
-  switch (currentFilter) {
-    case FILTERS.SEPIA:
-      photoPreview.style.filter = 'sepia(' + (1 * effectValue.value / 100) + ')';
-      break;
-    case FILTERS.CHROME:
-      photoPreview.style.filter = 'grayscale(' + (1 * effectValue.value / 100) + ')';
-      break;
-    case FILTERS.MARVIN:
-      photoPreview.style.filter = 'invert(' + (effectValue.value) + '%)';
-      break;
-    case FILTERS.PHOBOS:
-      photoPreview.style.filter = 'blur(' + (3 * effectValue.value / 100) + 'px)';
-      break;
-    case FILTERS.HEAT:
-      photoPreview.style.filter = 'brightness(' + (3 * effectValue.value / 100) + ')';
-      break;
-    default:
-      photoPreview.style = '';
-  }
-}
-
-effectPin.addEventListener('mouseup', applyFilter);
 
 // Редактирование размера изображения
 var resizeDec = document.querySelector('.upload-resize-controls-button-dec');

@@ -6,6 +6,7 @@
   var levelValue = document.querySelector('.upload-effect-level-val');
   var effectValue = document.querySelector('.upload-effect-level-value');
   var photoPreview = document.querySelector('.effect-image-preview');
+  var previewStyles = null;
 
   function moveHandle(event) {
     var dataContainer = container.getBoundingClientRect();
@@ -21,17 +22,24 @@
     levelValue.style.width = handle.style.left;
     effectValue.setAttribute('value', percent);
 
-    if (photoPreview.className === 'effect-chrome effect-image-preview') {
-      photoPreview.style.filter = 'grayscale(' + percent / 100 + ')';
-    } else if (photoPreview.className === 'effect-sepia effect-image-preview') {
-      photoPreview.style.filter = 'sepia(' + percent / 100 + ')';
-    } else if (photoPreview.className === 'effect-marvin effect-image-preview') {
-      photoPreview.style.filter = 'invert(' + percent + '%)';
-    } else if (photoPreview.className === 'effect-phobos effect-image-preview') {
-      photoPreview.style.filter = 'blur(' + percent * 3 / 100 + 'px)';
-    } else if (photoPreview.className === 'effect-heat effect-image-preview') {
-      photoPreview.style.filter = 'brightness(' + percent * 3 / 100 + ')';
+    switch (photoPreview.className) {
+      case ('effect-chrome effect-image-preview'):
+        previewStyles = 'grayscale(' + percent / 100 + ')';
+        break;
+      case ('effect-sepia effect-image-preview'):
+        previewStyles = 'sepia(' + percent / 100 + ')';
+        break;
+      case ('effect-marvin effect-image-preview'):
+        previewStyles = 'invert(' + percent + '%)';
+        break;
+      case ('effect-phobos effect-image-preview'):
+        previewStyles = 'blur(' + percent * 3 / 100 + 'px)';
+        break;
+      case ('effect-heat effect-image-preview'):
+        previewStyles = 'brightness(' + percent * 3 / 100 + ')';
+        break;
     }
+    photoPreview.style.filter = previewStyles;
   }
 
   handle.onmousedown = function (event) {

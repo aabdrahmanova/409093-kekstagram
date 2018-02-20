@@ -18,6 +18,11 @@
     resizeValue.setAttribute('value', '100%');
     resize();
     document.addEventListener('keydown', onPopupEscPress);
+    handle.style.left = '100%';
+    levelValue.style.width = handle.style.left;
+    effectValue.setAttribute('value', 100);
+    photoPreview.className = 'effect-none effect-image-preview';
+    photoPreview.style.filter = '';
   }
   function closePopup() {
     uploadForm.classList.add('hidden');
@@ -33,8 +38,9 @@
 
   // Применение эффекта для изображения
   var effectLevelElement = document.querySelector('.upload-effect-level');
-  var effectPin = uploadForm.querySelector('.upload-effect-level-pin');
   var effectValue = uploadForm.querySelector('.upload-effect-level-value');
+  var handle = document.querySelector('.upload-effect-level-pin');
+  var levelValue = document.querySelector('.upload-effect-level-val');
   var uploadEffectControls = document.querySelector('.upload-effect-controls');
   var photoPreview = document.querySelector('.effect-image-preview');
   var ARR_OF_INPUT_IDS = ['upload-effect-none', 'upload-effect-chrome', 'upload-effect-sepia', 'upload-effect-marvin', 'upload-effect-phobos', 'upload-effect-heat'];
@@ -55,15 +61,15 @@
         photoPreview.className = '';
         photoPreview.classList.add(ARR_OF_IMAGE_CLASSES[j]);
         photoPreview.style.filter = '';
+        handle.style.left = '100%';
+        levelValue.style.width = handle.style.left;
+        effectValue.setAttribute('value', 100);
       }
     }
   }
 
   // Навешиваем обработчики событий
   uploadEffectControls.addEventListener('click', setFilterToImage);
-
-  // Настройка интенсивности фильтра
-  effectValue.setAttribute('value', parseInt(effectPin.style.left, 10));
 
   // Редактирование размера изображения
   var resizeDec = document.querySelector('.upload-resize-controls-button-dec');

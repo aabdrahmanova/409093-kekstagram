@@ -31,6 +31,8 @@
     uploadForm.classList.add('hidden');
     document.removeEventListener('keydown', onPopupEscPress);
     document.getElementById('upload-file').value = '';
+    document.querySelector('.upload-form-hashtags').style = '';
+    document.querySelector('.error-message').remove();
     form.reset();
   }
 

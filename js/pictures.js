@@ -3,59 +3,48 @@
 (function () {
   // Создание данных
   var ESC_KEYCODE = 27;
+  var content = document.querySelector('#picture-template').content;
   var photos = [];
-  var url = [];
-  var comments = ['Всё отлично!',
-    'В целом всё неплохо. Но не всё.',
-    'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-    'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-    'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 
-  for (var i = 1; i <= 25; i++) {
-    url.push('photos/' + i + '.jpg');
+  function renderPhoto(photo) {
+    var photoElement = content.cloneNode(true);
+
+    photoElement.querySelector('img').src = photo.url;
+    photoElement.querySelector('.picture-comments').textContent = photo.comments;
+    photoElement.querySelector('.picture-likes').textContent = photo.likes;
+
+    return photoElement;
   }
 
-  function getLikes() {
-    return Math.round(Math.random() * (200 - 15) + 15);
-  }
-
-  function getComments() {
-    var arr = [];
-    for (var j = 0; j <= Math.round(Math.random() * ((1 - 0) + 0)); j++) {
-      arr.push(comments[Math.round(Math.random() * ((comments.length - 1) - 1) + 1)]);
+  function successHandler(photosFromBackend) {
+    var fragment = document.createDocumentFragment();
+    photos = photosFromBackend;
+    for (var i = 0; i < 25; i++) {
+      fragment.appendChild(renderPhoto(photos[i]));
     }
-    return arr;
+    document.querySelector('.container').appendChild(fragment);
+    addEvents();
   }
 
-  function createPhotoArr(count, arr) {
-    for (var j = 0; j < count; j++) {
-      arr.push({
-        url: url[j],
-        likes: getLikes(),
-        comments: getComments()
-      });
-    }
+  // Показываем ошибки
+  function errorHandler(errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 3% auto; color: white; text-align: center; background-color: #ff2430; width: 50%; opacity: 0.8; padding: 30px; border-radius: 10px; border: 3px solid #ee2430; box-shadow: 6px 6px 20px 0px rgba(0,0,0,0.7);';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '24px';
+    node.style.fontFamily = 'Arial, Helvetica, sans-serif';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+
+    document.addEventListener('click', function () {
+      node.remove();
+    });
   }
 
-  function addContent() {
-    var content = document.querySelector('#picture-template').content;
-    for (var j = 0; j <= photos.length - 1; j++) {
-      var photoElement = content.querySelector('img');
-      photoElement.src = photos[j].url;
-
-      var commentElement = content.querySelector('.picture-comments');
-      commentElement.textContent = photos[j].comments;
-
-      var likesElement = content.querySelector('.picture-likes');
-      likesElement.textContent = photos[j].likes;
-
-      document.querySelector('.pictures').appendChild(document.importNode(content, true));
-    }
-  }
-
-  createPhotoArr(25, photos);
-  addContent();
+  window.load(successHandler, errorHandler);
 
   // Показ изображения в полноэкранном режиме
   function openPicture(index) {
@@ -70,12 +59,13 @@
     document.querySelector('.gallery-overlay').classList.add('hidden');
   }
 
-  document.querySelectorAll('.picture').forEach(function (element, index) {
-    element.addEventListener('click', function () {
-      openPicture(index);
-
+  function addEvents() {
+    document.querySelectorAll('.picture').forEach(function (element, index) {
+      element.addEventListener('click', function () {
+        openPicture(index);
+      });
     });
-  });
+  }
 
   document.querySelector('.gallery-overlay-close').addEventListener('click', closePicture);
   function onPopupEscPress(evt) {

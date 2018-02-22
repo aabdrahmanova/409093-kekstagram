@@ -13,6 +13,7 @@
       closePopup();
     }
   }
+
   function openPopup() {
     uploadForm.classList.remove('hidden');
     resizeValue.setAttribute('value', '100%');
@@ -23,15 +24,20 @@
     effectValue.setAttribute('value', 100);
     photoPreview.className = 'effect-none effect-image-preview';
     photoPreview.style.filter = '';
+
   }
+
   function closePopup() {
     uploadForm.classList.add('hidden');
     document.removeEventListener('keydown', onPopupEscPress);
     document.getElementById('upload-file').value = '';
+    form.reset();
   }
+
   uploadFile.addEventListener('change', function () {
     openPopup();
   });
+
   uploadCancel.addEventListener('click', function () {
     closePopup();
   });
@@ -92,5 +98,14 @@
   function resize() {
     photoPreview.style.transform = 'scale(' + parseInt(resizeValue.value, 10) / 100 + ')';
   }
+
+  var form = document.querySelector('#upload-select-image');
+  form.addEventListener('submit', function (evt) {
+    window.save(new FormData(form), function () {
+      uploadForm.classList.add('hidden');
+    });
+    evt.preventDefault();
+    closePopup();
+  });
 })();
 

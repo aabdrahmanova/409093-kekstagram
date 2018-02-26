@@ -60,14 +60,17 @@
 
   function setFilterToImage(e) {
     photoPreview.classList.add('effect-image-preview');
+
     var target = e.target.parentNode;
     for (var j = 0; j < ARR_OF_INPUT_IDS.length; j++) {
       if (target.previousElementSibling.id === ARR_OF_INPUT_IDS[j]) {
+
         if (ARR_OF_INPUT_IDS[j] === 'upload-effect-none') {
           effectLevelElement.classList.add('hidden');
         } else {
           effectLevelElement.classList.remove('hidden');
         }
+
         photoPreview.className = '';
         photoPreview.classList.add(ARR_OF_IMAGE_CLASSES[j]);
         photoPreview.style.filter = '';

@@ -1,16 +1,16 @@
 'use strict';
 
 (function () {
-  var handle = document.querySelector('.upload-effect-level-pin');
+  var slider = document.querySelector('.upload-effect-level-pin');
   var container = document.querySelector('.upload-effect-level-line');
   var levelValue = document.querySelector('.upload-effect-level-val');
   var effectValue = document.querySelector('.upload-effect-level-value');
   var photoPreview = document.querySelector('.effect-image-preview');
   var previewStyles = null;
 
-  function moveHandle(evt) {
+  function onMoveHandler(evt) {
     var dataContainer = container.getBoundingClientRect();
-    var left = evt.clientX + 9 - dataContainer.left - handle.offsetWidth / 2;
+    var left = evt.clientX + 9 - dataContainer.left - slider.offsetWidth / 2;
     var percent = left * 100 / dataContainer.width;
     if (percent < 0) {
       percent = 0;
@@ -18,8 +18,8 @@
       percent = 100;
     }
 
-    handle.style.left = percent + '%';
-    levelValue.style.width = handle.style.left;
+    slider.style.left = percent + '%';
+    levelValue.style.width = slider.style.left;
     effectValue.setAttribute('value', percent);
 
     switch (photoPreview.className) {
@@ -42,15 +42,15 @@
     photoPreview.style.filter = previewStyles;
   }
 
-  handle.onmousedown = function (evt) {
-    moveHandle(evt);
-    document.onmousemove = function (e) {
-      moveHandle(e);
+  slider.onMouseDown = function (evt) {
+    onMoveHandler(evt);
+    document.onMouseMove = function (e) {
+      onMoveHandler(e);
     };
   };
 
-  document.onmouseup = function () {
-    document.onmousemove = null;
-    handle.onmouseup = null;
+  document.onMouseUp = function () {
+    document.onMouseMove = null;
+    slider.onMouseUp = null;
   };
 })();

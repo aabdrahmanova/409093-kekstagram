@@ -32,8 +32,10 @@
     document.removeEventListener('keydown', onPopupEscPress);
     document.getElementById('upload-file').value = '';
     document.querySelector('.upload-form-hashtags').style = '';
-    document.querySelector('.error-message').remove();
     form.reset();
+    if (form.querySelector('.error-message')) {
+      form.querySelector('.error-message').remove();
+    }
   }
 
   uploadFile.addEventListener('change', function () {

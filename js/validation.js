@@ -32,7 +32,7 @@
 
   var buttonSubmit = document.getElementById('upload-submit');
   if (buttonSubmit) {
-    buttonSubmit.addEventListener('click', function (event) {
+    buttonSubmit.addEventListener('click', function (evt) {
       var input = document.querySelector('.upload-form-hashtags');
       var validator = new Validator(input);
       var value = input.value.toLowerCase();
@@ -59,7 +59,7 @@
       var errorMessages = validator.getInvalidities();
       if (errorMessages) {
         validator.showError(errorMessages);
-        event.preventDefault();
+        evt.preventDefault();
       }
     });
   }

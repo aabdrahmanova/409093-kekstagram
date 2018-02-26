@@ -16,10 +16,10 @@
     return photoElement;
   }
 
-  function successHandler(photosFromBackend) {
+  function successHandler(photosArr) {
+    photos = photosArr;
     var fragment = document.createDocumentFragment();
-    photos = photosFromBackend;
-    for (var i = 0; i < 25; i++) {
+    for (var i = 0; i < photos.length; i++) {
       fragment.appendChild(renderPhoto(photos[i]));
     }
     document.querySelector('.container').appendChild(fragment);

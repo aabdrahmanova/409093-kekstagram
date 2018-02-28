@@ -50,6 +50,9 @@
           validator.addErrorMessage('Длина хэш-тега не должна превышать 20 символов');
           input.style = 'border: 3px solid red';
         }
+        if (hashtags[j].length === 0) {
+          validator.invalidities = [];
+        }
         if (keys[hashtags[j]]) {
           validator.addErrorMessage('Один и тот же хэш-тег не должен применяться более одного раза');
           input.style = 'border: 3px solid red';

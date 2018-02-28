@@ -2,6 +2,8 @@
 
 (function () {
   var ESC_KEYCODE = 27;
+  var ARR_OF_INPUT_IDS = ['upload-effect-none', 'upload-effect-chrome', 'upload-effect-sepia', 'upload-effect-marvin', 'upload-effect-phobos', 'upload-effect-heat'];
+  var ARR_OF_IMAGE_CLASSES = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
 
   // Загрузка изображения и показ формы редактирования
   var uploadFile = document.querySelector('#upload-file');
@@ -20,8 +22,8 @@
     resizeValue.setAttribute('value', '100%');
     resize();
     document.addEventListener('keydown', onPopupEscPress);
-    handle.style.left = '100%';
-    levelValue.style.width = handle.style.left;
+    slider.style.left = '100%';
+    levelValue.style.width = slider.style.left;
     effectValue.setAttribute('value', 100);
     photoPreview.className = 'effect-none effect-image-preview';
     photoPreview.style.filter = '';
@@ -56,12 +58,10 @@
   // Применение эффекта для изображения
   var effectLevelElement = document.querySelector('.upload-effect-level');
   var effectValue = uploadForm.querySelector('.upload-effect-level-value');
-  var handle = document.querySelector('.upload-effect-level-pin');
+  var slider = document.querySelector('.upload-effect-level-pin');
   var levelValue = document.querySelector('.upload-effect-level-val');
   var uploadEffectControls = document.querySelector('.upload-effect-controls');
   var photoPreview = document.querySelector('.effect-image-preview');
-  var ARR_OF_INPUT_IDS = ['upload-effect-none', 'upload-effect-chrome', 'upload-effect-sepia', 'upload-effect-marvin', 'upload-effect-phobos', 'upload-effect-heat'];
-  var ARR_OF_IMAGE_CLASSES = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
 
   effectLevelElement.classList.add('hidden');
 
@@ -80,8 +80,8 @@
         photoPreview.className = '';
         photoPreview.classList.add(ARR_OF_IMAGE_CLASSES[j]);
         photoPreview.style.filter = '';
-        handle.style.left = '100%';
-        levelValue.style.width = handle.style.left;
+        slider.style.left = '100%';
+        levelValue.style.width = slider.style.left;
         effectValue.setAttribute('value', 100);
       }
     }

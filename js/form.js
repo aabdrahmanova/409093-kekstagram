@@ -4,12 +4,14 @@
   var ESC_KEYCODE = 27;
   var ARR_OF_INPUT_IDS = ['upload-effect-none', 'upload-effect-chrome', 'upload-effect-sepia', 'upload-effect-marvin', 'upload-effect-phobos', 'upload-effect-heat'];
   var ARR_OF_IMAGE_CLASSES = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   // Загрузка изображения и показ формы редактирования
   var uploadFile = document.querySelector('#upload-file');
   var uploadForm = document.querySelector('.upload-overlay');
   var uploadCancel = document.querySelector('#upload-cancel');
   var description = document.querySelector('.upload-form-description');
+  var photoPreview = document.querySelector('.effect-image-preview');
 
   function onPopupEscPress(evt) {
     if (evt.keyCode === ESC_KEYCODE) {
@@ -18,22 +20,39 @@
   }
 
   function openPopup() {
-    uploadForm.classList.remove('hidden');
-    resizeValue.setAttribute('value', '100%');
-    resize();
-    document.addEventListener('keydown', onPopupEscPress);
-    slider.style.left = '100%';
-    levelValue.style.width = slider.style.left;
-    effectValue.setAttribute('value', 100);
-    photoPreview.className = 'effect-none effect-image-preview';
-    photoPreview.style.filter = '';
 
-    description.onfocus = function () {
-      document.removeEventListener('keydown', onPopupEscPress);
-    };
-    description.onblur = function () {
+    uploadForm.classList.remove('hidden');
+    var file = uploadFile.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        photoPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+
+      resizeValue.setAttribute('value', '100%');
+      resize();
       document.addEventListener('keydown', onPopupEscPress);
-    };
+      slider.style.left = '100%';
+      levelValue.style.width = slider.style.left;
+      effectValue.setAttribute('value', 100);
+      photoPreview.className = 'effect-none effect-image-preview';
+      photoPreview.style.filter = '';
+
+      description.onfocus = function () {
+        document.removeEventListener('keydown', onPopupEscPress);
+      };
+      description.onblur = function () {
+        document.addEventListener('keydown', onPopupEscPress);
+      };
+    }
   }
 
   function closePopup() {
@@ -61,7 +80,6 @@
   var slider = document.querySelector('.upload-effect-level-pin');
   var levelValue = document.querySelector('.upload-effect-level-val');
   var uploadEffectControls = document.querySelector('.upload-effect-controls');
-  var photoPreview = document.querySelector('.effect-image-preview');
 
   effectLevelElement.classList.add('hidden');
 
@@ -121,4 +139,3 @@
     closePopup();
   });
 })();
-

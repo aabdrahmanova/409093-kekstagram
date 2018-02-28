@@ -89,8 +89,8 @@
     var target = e.target;
 
     if (target.id === 'filter-popular') {
-      var sortByLikes = photos.slice();
-      sortByLikes.sort(function (a, b) {
+      var sortByLikes = photos.slice().sort(function (a, b) {
+
         if (a.likes > b.likes) {
           return -1;
         }
@@ -99,12 +99,13 @@
         }
         return 0;
       });
+
       successHandler(sortByLikes);
     }
 
     if (target.id === 'filter-discussed') {
-      var sortByComments = photos.slice();
-      sortByComments.sort(function (a, b) {
+      var sortByComments = photos.slice().sort(function (a, b) {
+
         if (a.comments.length > b.comments.length) {
           return -1;
         }
@@ -113,14 +114,15 @@
         }
         return 0;
       });
+
       successHandler(sortByComments);
     }
 
     if (target.id === 'filter-random') {
-      var randomSort = photos.slice();
-      randomSort.sort(function () {
+      var randomSort = photos.slice().sort(function () {
         return Math.random();
       });
+
       successHandler(randomSort);
     }
 

@@ -7,6 +7,7 @@
   var uploadFile = document.querySelector('#upload-file');
   var uploadForm = document.querySelector('.upload-overlay');
   var uploadCancel = document.querySelector('#upload-cancel');
+  var description = document.querySelector('.upload-form-description');
 
   function onPopupEscPress(evt) {
     if (evt.keyCode === ESC_KEYCODE) {
@@ -25,6 +26,12 @@
     photoPreview.className = 'effect-none effect-image-preview';
     photoPreview.style.filter = '';
 
+    description.onfocus = function () {
+      document.removeEventListener('keydown', onPopupEscPress);
+    };
+    description.onblur = function () {
+      document.addEventListener('keydown', onPopupEscPress);
+    };
   }
 
   function closePopup() {
@@ -60,7 +67,6 @@
 
   function setFilterToImage(e) {
     photoPreview.classList.add('effect-image-preview');
-
     var target = e.target.parentNode;
     for (var j = 0; j < ARR_OF_INPUT_IDS.length; j++) {
       if (target.previousElementSibling.id === ARR_OF_INPUT_IDS[j]) {

@@ -8,7 +8,7 @@
   var photoPreview = document.querySelector('.effect-image-preview');
   var previewStyles = null;
 
-  function onMoveHandler(evt) {
+  function onMoveHandle(evt) {
     var dataContainer = container.getBoundingClientRect();
     var left = evt.clientX + 9 - dataContainer.left - slider.offsetWidth / 2;
     var percent = left * 100 / dataContainer.width;
@@ -42,15 +42,15 @@
     photoPreview.style.filter = previewStyles;
   }
 
-  slider.onMouseDown = function (evt) {
-    onMoveHandler(evt);
-    document.onMouseMove = function (e) {
-      onMoveHandler(e);
+  slider.onmousedown = function (evt) {
+    onMoveHandle(evt);
+    document.onmousemove = function (e) {
+      onMoveHandle(e);
     };
   };
 
-  document.onMouseUp = function () {
-    document.onMouseMove = null;
-    slider.onMouseUp = null;
+  document.onmouseup = function () {
+    document.onmousemove = null;
+    slider.onmouseup = null;
   };
 })();

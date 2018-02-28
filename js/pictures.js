@@ -78,6 +78,7 @@
   }
 
   // Фильтрация картинок
+
   function clearContainer() {
     while (container.firstChild) {
       container.removeChild(container.firstChild);
@@ -88,47 +89,49 @@
     clearContainer();
     var target = e.target;
 
-    if (target.id === 'filter-popular') {
-      var sortByLikes = photos.slice().sort(function (a, b) {
+    window.debounce(function () {
+      if (target.id === 'filter-popular') {
+        var sortByLikes = photos.slice().sort(function (a, b) {
 
-        if (a.likes > b.likes) {
-          return -1;
-        }
-        if (a.likes < b.likes) {
-          return 1;
-        }
-        return 0;
-      });
+          if (a.likes > b.likes) {
+            return -1;
+          }
+          if (a.likes < b.likes) {
+            return 1;
+          }
+          return 0;
+        });
 
-      successHandler(sortByLikes);
-    }
+        setTimeout(successHandler(sortByLikes), 2000);
+      }
 
-    if (target.id === 'filter-discussed') {
-      var sortByComments = photos.slice().sort(function (a, b) {
+      if (target.id === 'filter-discussed') {
+        var sortByComments = photos.slice().sort(function (a, b) {
 
-        if (a.comments.length > b.comments.length) {
-          return -1;
-        }
-        if (a.comments.length < b.comments.length) {
-          return 1;
-        }
-        return 0;
-      });
+          if (a.comments.length > b.comments.length) {
+            return -1;
+          }
+          if (a.comments.length < b.comments.length) {
+            return 1;
+          }
+          return 0;
+        });
 
-      successHandler(sortByComments);
-    }
+        successHandler(sortByComments);
+      }
 
-    if (target.id === 'filter-random') {
-      var randomSort = photos.slice().sort(function () {
-        return Math.random();
-      });
+      if (target.id === 'filter-random') {
+        var randomSort = photos.slice().sort(function () {
+          return Math.random();
+        });
 
-      successHandler(randomSort);
-    }
+        successHandler(randomSort);
+      }
 
-    if (target.id === 'filter-recommend') {
-      window.load(successHandler, errorHandler);
-    }
+      if (target.id === 'filter-recommend') {
+        window.load(successHandler, errorHandler);
+      }
+    });
   }
 
   document.querySelectorAll('.filters-radio').forEach(function (element) {

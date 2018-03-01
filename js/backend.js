@@ -1,21 +1,24 @@
 'use strict';
 
 (function () {
+  var TIMEOUT = 10000;
+  var STATUS_OK = 200;
+
   function setup(onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
-    xhr.addEventListener('load', function () {
-      return xhr.status === 200 ? onLoad(xhr.response) : onError(xhr.response);
-    });
-    xhr.addEventListener('error', function () {
+    xhr.onload = function () {
+      return xhr.status === STATUS_OK ? onLoad(xhr.response) : onError(xhr.response);
+    };
+    xhr.onerror = function () {
       onError('Произошла ошибка соединения');
-    });
-    xhr.addEventListener('timeout', function () {
+    };
+    xhr.ontimeout = function () {
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-    });
+    };
 
-    xhr.timeout = 10000; // 10s
+    xhr.timeout = TIMEOUT; // 10s
 
     return xhr;
   }

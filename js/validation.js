@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MAX_HASHTAG_LENGTH = 20;
+
   // Валидация хэш-тега
   function Validator(input) {
     this.invalidities = [];
@@ -32,7 +34,7 @@
 
   var buttonSubmit = document.getElementById('upload-submit');
   if (buttonSubmit) {
-    buttonSubmit.addEventListener('click', function (evt) {
+    buttonSubmit.onclick = function (evt) {
       var input = document.querySelector('.upload-form-hashtags');
       var validator = new Validator(input);
       var value = input.value.toLowerCase();
@@ -46,7 +48,7 @@
         if (hashtags[j][0] !== '#') {
           validator.addErrorMessage('Все хэш-теги должны начинаться с #');
           input.style = 'border: 3px solid red';
-        } else if (hashtags[j].length > 20) {
+        } else if (hashtags[j].length > MAX_HASHTAG_LENGTH) {
           validator.addErrorMessage('Длина хэш-тега не должна превышать 20 символов');
           input.style = 'border: 3px solid red';
         }
@@ -64,6 +66,6 @@
         validator.showError(errorMessages);
         evt.preventDefault();
       }
-    });
+    };
   }
 })();

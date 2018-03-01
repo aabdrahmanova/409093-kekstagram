@@ -2,7 +2,6 @@
 
 (function () {
   // Создание данных
-  var ESC_KEYCODE = 27;
   var content = document.querySelector('#picture-template').content;
   var photos = [];
   var filters = document.querySelector('.filters');
@@ -21,9 +20,11 @@
   function successHandler(photosArr) {
     photos = photosArr;
     var fragment = document.createDocumentFragment();
+
     for (var i = 0; i < photos.length; i++) {
       fragment.appendChild(renderPhoto(photos[i]));
     }
+
     document.querySelector('.container').appendChild(fragment);
     addEvents();
     filters.classList.remove('filters-inactive');
@@ -42,9 +43,9 @@
     node.textContent = errorMessage;
     document.body.insertAdjacentElement('afterbegin', node);
 
-    document.addEventListener('click', function () {
+    document.onclick = function () {
       node.remove();
-    });
+    };
   }
 
   window.load(successHandler, errorHandler);
@@ -55,7 +56,7 @@
     document.querySelector('.gallery-overlay .gallery-overlay-image').src = photos[index].url;
     document.querySelector('.gallery-overlay .comments-count').textContent = photos[index].comments.length;
     document.querySelector('.gallery-overlay .likes-count').textContent = photos[index].likes;
-    document.addEventListener('keydown', onPopupEscPress);
+    document.onkeydown = onPopupEscPress;
   }
 
   function closePicture() {
@@ -64,21 +65,18 @@
 
   function addEvents() {
     document.querySelectorAll('.picture').forEach(function (element, index) {
-      element.addEventListener('click', function () {
+      element.onclick = function () {
         openPicture(index);
-      });
+      };
     });
   }
 
-  document.querySelector('.gallery-overlay-close').addEventListener('click', closePicture);
+  document.querySelector('.gallery-overlay-close').onclick = closePicture;
   function onPopupEscPress(evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      closePicture();
-    }
+    window.isEscEvent(evt, closePicture);
   }
 
   // Фильтрация картинок
-
   function clearContainer() {
     while (container.firstChild) {
       container.removeChild(container.firstChild);
@@ -135,6 +133,6 @@
   }
 
   document.querySelectorAll('.filters-radio').forEach(function (element) {
-    element.addEventListener('click', sortPictures);
+    element.onclick = sortPictures;
   });
 })();

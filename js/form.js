@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
   var ARR_OF_INPUT_IDS = ['upload-effect-none', 'upload-effect-chrome', 'upload-effect-sepia', 'upload-effect-marvin', 'upload-effect-phobos', 'upload-effect-heat'];
   var ARR_OF_IMAGE_CLASSES = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
@@ -14,9 +13,7 @@
   var photoPreview = document.querySelector('.effect-image-preview');
 
   function onPopupEscPress(evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      closePopup();
-    }
+    window.isEscEvent(evt, closePopup);
   }
 
   function openPopup() {
@@ -31,15 +28,15 @@
     if (matches) {
       var reader = new FileReader();
 
-      reader.addEventListener('load', function () {
+      reader.onload = function () {
         photoPreview.src = reader.result;
-      });
+      };
 
       reader.readAsDataURL(file);
 
       resizeValue.setAttribute('value', '100%');
       resize();
-      document.addEventListener('keydown', onPopupEscPress);
+      document.onkeydown = onPopupEscPress;
       slider.style.left = '100%';
       levelValue.style.width = slider.style.left;
       effectValue.setAttribute('value', 100);
@@ -47,10 +44,10 @@
       photoPreview.style.filter = '';
 
       description.onfocus = function () {
-        document.removeEventListener('keydown', onPopupEscPress);
+        document.onkeydown = null;
       };
       description.onblur = function () {
-        document.addEventListener('keydown', onPopupEscPress);
+        document.onkeydown = onPopupEscPress;
       };
     }
   }
@@ -66,13 +63,8 @@
     }
   }
 
-  uploadFile.addEventListener('change', function () {
-    openPopup();
-  });
-
-  uploadCancel.addEventListener('click', function () {
-    closePopup();
-  });
+  uploadFile.onchange = openPopup;
+  uploadCancel.onclick = closePopup;
 
   // Применение эффекта для изображения
   var effectLevelElement = document.querySelector('.upload-effect-level');
@@ -105,37 +97,39 @@
     }
   }
 
-  // Навешиваем обработчики событий
-  uploadEffectControls.addEventListener('click', setFilterToImage);
+  uploadEffectControls.onclick = setFilterToImage;
 
   // Редактирование размера изображения
+  var RESIZE_STEP = 25;
+  var minSize = 25;
+  var maxSize = 100;
   var resizeDec = document.querySelector('.upload-resize-controls-button-dec');
   var resizeInc = document.querySelector('.upload-resize-controls-button-inc');
   var resizeValue = document.querySelector('.upload-resize-controls-value');
 
-  resizeDec.addEventListener('click', function () {
-    if (parseInt(resizeValue.value, 10) > 25) {
-      resizeValue.setAttribute('value', parseInt(resizeValue.value, 10) - 25 + '%');
+  resizeDec.onclick = function () {
+    if (parseInt(resizeValue.value, 10) > minSize) {
+      resizeValue.setAttribute('value', parseInt(resizeValue.value, 10) - RESIZE_STEP + '%');
       resize();
     }
-  });
-  resizeInc.addEventListener('click', function () {
-    if (parseInt(resizeValue.value, 10) < 100) {
-      resizeValue.setAttribute('value', parseInt(resizeValue.value, 10) + 25 + '%');
+  };
+  resizeInc.onclick = function () {
+    if (parseInt(resizeValue.value, 10) < maxSize) {
+      resizeValue.setAttribute('value', parseInt(resizeValue.value, 10) + RESIZE_STEP + '%');
       resize();
     }
-  });
+  };
 
   function resize() {
     photoPreview.style.transform = 'scale(' + parseInt(resizeValue.value, 10) / 100 + ')';
   }
 
   var form = document.querySelector('#upload-select-image');
-  form.addEventListener('submit', function (evt) {
+  form.onsubmit = function (evt) {
     window.save(new FormData(form), function () {
       uploadForm.classList.add('hidden');
     });
     evt.preventDefault();
     closePopup();
-  });
+  };
 })();

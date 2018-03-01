@@ -9,13 +9,20 @@
   var previewStyles = null;
 
   function onMoveHandle(evt) {
+    var pinWidth = 18;
     var dataContainer = container.getBoundingClientRect();
-    var left = evt.clientX + 9 - dataContainer.left - slider.offsetWidth / 2;
+    var left = evt.clientX + pinWidth / 2 - dataContainer.left - slider.offsetWidth / 2;
     var percent = left * 100 / dataContainer.width;
-    if (percent < 0) {
-      percent = 0;
-    } else if (percent > 100) {
-      percent = 100;
+    var minPercent = 0;
+    var maxPercent = 100;
+    var maxBlur = 3;
+    var maxBrightness = 3;
+
+
+    if (percent < minPercent) {
+      percent = minPercent;
+    } else if (percent > maxPercent) {
+      percent = maxPercent;
     }
 
     slider.style.left = percent + '%';
@@ -24,19 +31,19 @@
 
     switch (photoPreview.className) {
       case ('effect-chrome effect-image-preview'):
-        previewStyles = 'grayscale(' + percent / 100 + ')';
+        previewStyles = 'grayscale(' + percent / maxPercent + ')';
         break;
       case ('effect-sepia effect-image-preview'):
-        previewStyles = 'sepia(' + percent / 100 + ')';
+        previewStyles = 'sepia(' + percent / maxPercent + ')';
         break;
       case ('effect-marvin effect-image-preview'):
         previewStyles = 'invert(' + percent + '%)';
         break;
       case ('effect-phobos effect-image-preview'):
-        previewStyles = 'blur(' + percent * 3 / 100 + 'px)';
+        previewStyles = 'blur(' + percent * maxBlur / maxPercent + 'px)';
         break;
       case ('effect-heat effect-image-preview'):
-        previewStyles = 'brightness(' + percent * 3 / 100 + ')';
+        previewStyles = 'brightness(' + percent * maxBrightness / maxPercent + ')';
         break;
     }
     photoPreview.style.filter = previewStyles;
